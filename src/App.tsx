@@ -4,60 +4,68 @@ import { Hero } from './components/Hero';
 import { StatsStrip } from './components/StatsStrip';
 import { Footer } from './components/Footer';
 
+// Eagerly import Modals so card clicks (like Town Halloween Party) open instantly and never fail to fetch
+import { DocumentModal } from './components/Modals/DocumentModal';
+import { DonationModal } from './components/Modals/DonationModal';
+import { MemberPortalModal } from './components/Modals/MemberPortalModal';
+import { RigDetailModal } from './components/Modals/RigDetailModal';
+import { EventDetailModal } from './components/Modals/EventDetailModal';
+
 import { ArchiveDocument, FleetRig, CommunityEvent, BoardMember, EVENTS_DATA } from './data/associationData';
 
+// Safe lazy-loader that prevents the "White Screen of Death" if a new deployment happens while a user has the tab open
+function lazyWithRetry<T extends React.ComponentType<any>>(
+  factory: () => Promise<{ default: T }>
+) {
+  return lazy(async () => {
+    try {
+      return await factory();
+    } catch (error) {
+      const hasReloaded = sessionStorage.getItem('chunk_retry_reload');
+      if (!hasReloaded) {
+        sessionStorage.setItem('chunk_retry_reload', 'true');
+        window.location.reload();
+      }
+      throw error;
+    }
+  });
+}
+
 // Lazy-load Below-the-Fold Home Sections
-const AboutSection = lazy(() =>
+const AboutSection = lazyWithRetry(() =>
   import('./components/AboutSection').then((m) => ({ default: m.AboutSection }))
 );
-const FleetSection = lazy(() =>
+const FleetSection = lazyWithRetry(() =>
   import('./components/FleetSection').then((m) => ({ default: m.FleetSection }))
 );
-const LeadershipSection = lazy(() =>
+const LeadershipSection = lazyWithRetry(() =>
   import('./components/LeadershipSection').then((m) => ({ default: m.LeadershipSection }))
 );
-const EventsSection = lazy(() =>
+const EventsSection = lazyWithRetry(() =>
   import('./components/EventsSection').then((m) => ({ default: m.EventsSection }))
 );
-const DocumentRepository = lazy(() =>
+const DocumentRepository = lazyWithRetry(() =>
   import('./components/DocumentRepository').then((m) => ({ default: m.DocumentRepository }))
 );
-const DonationSection = lazy(() =>
+const DonationSection = lazyWithRetry(() =>
   import('./components/DonationSection').then((m) => ({ default: m.DonationSection }))
 );
-const ContactSection = lazy(() =>
+const ContactSection = lazyWithRetry(() =>
   import('./components/ContactSection').then((m) => ({ default: m.ContactSection }))
 );
 
 // Lazy-load Secondary Pages (Only downloaded if a user navigates to them)
-const PrivacyPolicyPage = lazy(() =>
+const PrivacyPolicyPage = lazyWithRetry(() =>
   import('./pages/PrivacyPolicyPage').then((m) => ({ default: m.PrivacyPolicyPage }))
 );
-const TermsOfServicePage = lazy(() =>
+const TermsOfServicePage = lazyWithRetry(() =>
   import('./pages/TermsOfServicePage').then((m) => ({ default: m.TermsOfServicePage }))
 );
-const FireSafetyPage = lazy(() =>
+const FireSafetyPage = lazyWithRetry(() =>
   import('./pages/FireSafetyPage').then((m) => ({ default: m.FireSafetyPage }))
 );
-const RuralPropertyChecklistPage = lazy(() =>
+const RuralPropertyChecklistPage = lazyWithRetry(() =>
   import('./pages/RuralPropertyChecklistPage').then((m) => ({ default: m.RuralPropertyChecklistPage }))
-);
-
-// Lazy-load Interactive Modals (Only downloaded when needed)
-const DocumentModal = lazy(() =>
-  import('./components/Modals/DocumentModal').then((m) => ({ default: m.DocumentModal }))
-);
-const DonationModal = lazy(() =>
-  import('./components/Modals/DonationModal').then((m) => ({ default: m.DonationModal }))
-);
-const MemberPortalModal = lazy(() =>
-  import('./components/Modals/MemberPortalModal').then((m) => ({ default: m.MemberPortalModal }))
-);
-const RigDetailModal = lazy(() =>
-  import('./components/Modals/RigDetailModal').then((m) => ({ default: m.RigDetailModal }))
-);
-const EventDetailModal = lazy(() =>
-  import('./components/Modals/EventDetailModal').then((m) => ({ default: m.EventDetailModal }))
 );
 
 export type PageView = 'home' | 'privacy' | 'terms' | 'fire-safety' | 'rural-checklist';
@@ -76,6 +84,11 @@ export default function App() {
   const [memberPortalOpen, setMemberPortalOpen] = useState(false);
   const [selectedRig, setSelectedRig] = useState<FleetRig | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<CommunityEvent | null>(null);
+
+  // Clear chunk reload flag once the app mounts cleanly
+  useEffect(() => {
+    sessionStorage.removeItem('chunk_retry_reload');
+  }, []);
 
   // Sync with browser hash on initial load and on popstate
   useEffect(() => {
@@ -234,47 +247,35 @@ export default function App() {
         onNavigate={(page) => navigateTo(page)}
       />
 
-      {/* Lazy-Loaded Interactive Modals */}
-      <Suspense fallback={null}>
-        {selectedDocument && (
-          <DocumentModal
-            document={selectedDocument}
-            onClose={() => setSelectedDocument(null)}
-          />
-        )}
+      {/* Interactive Modals (Eagerly loaded so clicking cards never fails or lags) */}
+      <DocumentModal
+        document={selectedDocument}
+        onClose={() => setSelectedDocument(null)}
+      />
 
-        {donationModalOpen && (
-          <DonationModal
-            initialAmount={donationAmount}
-            initialImpact={donationImpact}
-            isOpen={donationModalOpen}
-            onClose={() => setDonationModalOpen(false)}
-          />
-        )}
+      <DonationModal
+        initialAmount={donationAmount}
+        initialImpact={donationImpact}
+        isOpen={donationModalOpen}
+        onClose={() => setDonationModalOpen(false)}
+      />
 
-        {memberPortalOpen && (
-          <MemberPortalModal
-            isOpen={memberPortalOpen}
-            onClose={() => setMemberPortalOpen(false)}
-          />
-        )}
+      <MemberPortalModal
+        isOpen={memberPortalOpen}
+        onClose={() => setMemberPortalOpen(false)}
+      />
 
-        {selectedRig && (
-          <RigDetailModal
-            rig={selectedRig}
-            onClose={() => setSelectedRig(null)}
-            onRequestAppearance={handleScrollToContact}
-          />
-        )}
+      <RigDetailModal
+        rig={selectedRig}
+        onClose={() => setSelectedRig(null)}
+        onRequestAppearance={handleScrollToContact}
+      />
 
-        {selectedEvent && (
-          <EventDetailModal
-            event={selectedEvent}
-            onClose={() => setSelectedEvent(null)}
-            onVolunteer={handleScrollToContact}
-          />
-        )}
-      </Suspense>
+      <EventDetailModal
+        event={selectedEvent}
+        onClose={() => setSelectedEvent(null)}
+        onVolunteer={handleScrollToContact}
+      />
     </div>
   );
 }
