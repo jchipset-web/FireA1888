@@ -93,7 +93,7 @@ export const AboutSection: React.FC = () => {
               <div className="bg-[#0F172A] text-white rounded-xl p-6 shadow-md border-l-4 border-amber-500 relative">
                 <p className="italic text-slate-200 text-sm sm:text-base leading-relaxed">
                   “The Association is more than a roster of personnel; it is an enduring legacy of
-                  neighbors helping neighbors, dedicated to strengthening this community for
+                  neighbours helping neighbours, dedicated to strengthening this community for
                   generations to come.”
                 </p>
               </div>
