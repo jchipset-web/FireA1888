@@ -1,0 +1,95 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Registered member profile for the Forest Firefighters Association",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 256 },
+        "displayName": { "type": "string", "maxLength": 128 },
+        "badgeNumber": { "type": "string", "maxLength": 32 },
+        "role": { "type": "string", "maxLength": 64 },
+        "station": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "email", "displayName", "role"]
+    },
+    "MeetingMinute": {
+      "title": "MeetingMinute",
+      "description": "Official recorded minutes and decisions from Association assemblies",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 256 },
+        "meetingDate": { "type": "string", "maxLength": 64 },
+        "category": { "type": "string", "maxLength": 64 },
+        "location": { "type": "string", "maxLength": 128 },
+        "presidedBy": { "type": "string", "maxLength": 128 },
+        "recordedBy": { "type": "string", "maxLength": 128 },
+        "summary": { "type": "string", "maxLength": 2000 },
+        "motions": { "type": "string", "maxLength": 2000 },
+        "attendeesCount": { "type": "number" },
+        "downloadUrl": { "type": "string", "maxLength": 512 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["title", "meetingDate", "category", "summary"]
+    },
+    "ExpenseClaim": {
+      "title": "ExpenseClaim",
+      "description": "Member reimbursement claim submitted for Association activities",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "memberId": { "type": "string", "maxLength": 128 },
+        "memberName": { "type": "string", "maxLength": 128 },
+        "memberEmail": { "type": "string", "maxLength": 256 },
+        "category": { "type": "string", "maxLength": 128 },
+        "amount": { "type": "number" },
+        "merchant": { "type": "string", "maxLength": 128 },
+        "expenseDate": { "type": "string", "maxLength": 64 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "receiptNotes": { "type": "string", "maxLength": 500 },
+        "status": { "type": "string", "enum": ["submitted", "under_review", "approved", "reimbursed"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["memberId", "memberName", "category", "amount", "merchant", "expenseDate", "description", "status"]
+    },
+    "PortalEvent": {
+      "title": "PortalEvent",
+      "description": "Upcoming Association events with volunteer tasks and member signups",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 256 },
+        "eventDate": { "type": "string", "maxLength": 64 },
+        "time": { "type": "string", "maxLength": 64 },
+        "location": { "type": "string", "maxLength": 128 },
+        "description": { "type": "string", "maxLength": 1500 },
+        "category": { "type": "string", "maxLength": 64 },
+        "tasks": { "type": "string", "maxLength": 8000 },
+        "createdBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["title", "eventDate", "time", "location", "description"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profile data for members"
+    },
+    "/meeting_minutes/{minuteId}": {
+      "schema": { "$ref": "#/entities/MeetingMinute" },
+      "description": "Official records and minutes of Association meetings"
+    },
+    "/expense_claims/{claimId}": {
+      "schema": { "$ref": "#/entities/ExpenseClaim" },
+      "description": "Member expense submission claims"
+    },
+    "/portal_events/{eventId}": {
+      "schema": { "$ref": "#/entities/PortalEvent" },
+      "description": "Events and volunteer sign-up shifts"
+    }
+  }
+}

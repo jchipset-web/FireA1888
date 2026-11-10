@@ -1,0 +1,139 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper Primitives
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'j.chipset@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // Validation for User Profile
+    function isValidUser(data) {
+      return data.keys().hasAll(['id', 'email', 'displayName', 'role']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.email is string && data.email.size() <= 256 &&
+        data.displayName is string && data.displayName.size() <= 128 &&
+        data.role is string && data.role.size() <= 64 &&
+        (!('badgeNumber' in data) || (data.badgeNumber is string && data.badgeNumber.size() <= 32)) &&
+        (!('station' in data) || (data.station is string && data.station.size() <= 128)) &&
+        (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 128));
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow get: if isSignedIn() && (isOwner(userId) || isAdmin());
+      allow list: if isSignedIn();
+      allow create: if isSignedIn() && isOwner(userId) && isValidId(userId) && isValidUser(incoming());
+      allow update: if isSignedIn() && (isOwner(userId) || isAdmin()) && isValidId(userId) && isValidUser(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // Validation for Meeting Minutes
+    function isValidMeetingMinute(data) {
+      return data.keys().hasAll(['title', 'meetingDate', 'category', 'summary']) &&
+        data.title is string && data.title.size() <= 256 &&
+        data.meetingDate is string && data.meetingDate.size() <= 64 &&
+        data.category is string && data.category.size() <= 64 &&
+        data.summary is string && data.summary.size() <= 2000 &&
+        (!('location' in data) || (data.location is string && data.location.size() <= 128)) &&
+        (!('presidedBy' in data) || (data.presidedBy is string && data.presidedBy.size() <= 128)) &&
+        (!('recordedBy' in data) || (data.recordedBy is string && data.recordedBy.size() <= 128)) &&
+        (!('motions' in data) || (data.motions is string && data.motions.size() <= 2000)) &&
+        (!('attendeesCount' in data) || (data.attendeesCount is number)) &&
+        (!('downloadUrl' in data) || (data.downloadUrl is string && data.downloadUrl.size() <= 512)) &&
+        (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 128));
+    }
+
+    // Meeting Minutes Collection
+    match /meeting_minutes/{minuteId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(minuteId) && isValidMeetingMinute(incoming());
+      allow update: if isSignedIn() && isValidId(minuteId) && isValidMeetingMinute(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // Validation for Expense Claim
+    function isValidExpenseClaim(data) {
+      return data.keys().hasAll(['memberId', 'memberName', 'category', 'amount', 'merchant', 'expenseDate', 'description', 'status']) &&
+        data.memberId is string && data.memberId == request.auth.uid &&
+        data.memberName is string && data.memberName.size() <= 128 &&
+        data.category is string && data.category.size() <= 128 &&
+        data.amount is number && data.amount >= 0 && data.amount <= 100000 &&
+        data.merchant is string && data.merchant.size() <= 128 &&
+        data.expenseDate is string && data.expenseDate.size() <= 64 &&
+        data.description is string && data.description.size() <= 1000 &&
+        data.status in ['submitted', 'under_review', 'approved', 'reimbursed'] &&
+        (!('memberEmail' in data) || (data.memberEmail is string && data.memberEmail.size() <= 256)) &&
+        (!('receiptNotes' in data) || (data.receiptNotes is string && data.receiptNotes.size() <= 500)) &&
+        (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 128));
+    }
+
+    // Expense Claims Collection
+    match /expense_claims/{claimId} {
+      allow get: if isSignedIn() && (existing().memberId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(claimId) && isValidExpenseClaim(incoming());
+      allow update: if isSignedIn() && isValidId(claimId) && (
+        (existing().memberId == request.auth.uid && isValidExpenseClaim(incoming())) ||
+        isAdmin()
+      );
+      allow delete: if isSignedIn() && (existing().memberId == request.auth.uid || isAdmin());
+    }
+
+    // Validation for Portal Event
+    function isValidPortalEvent(data) {
+      return data.keys().hasAll(['title', 'eventDate', 'time', 'location', 'description']) &&
+        data.title is string && data.title.size() <= 256 &&
+        data.eventDate is string && data.eventDate.size() <= 64 &&
+        data.time is string && data.time.size() <= 64 &&
+        data.location is string && data.location.size() <= 128 &&
+        data.description is string && data.description.size() <= 1500 &&
+        (!('category' in data) || (data.category is string && data.category.size() <= 64)) &&
+        (!('tasks' in data) || (data.tasks is string && data.tasks.size() <= 8000)) &&
+        (!('createdBy' in data) || (data.createdBy is string && data.createdBy.size() <= 128)) &&
+        (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 128));
+    }
+
+    // Portal Events Collection
+    match /portal_events/{eventId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(eventId) && isValidPortalEvent(incoming());
+      allow update: if isSignedIn() && isValidId(eventId) && isValidPortalEvent(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // Connection testing endpoint
+    match /test/connection {
+      allow read: if true;
+    }
+  }
+}

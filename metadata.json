@@ -1,0 +1,6 @@
+{
+  "name": "Forest Firefighters Association 1888",
+  "description": "volunteer service and philanthropic support for Forest and Lambton Shores. Showing up for our neighbours for over 135 years.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
