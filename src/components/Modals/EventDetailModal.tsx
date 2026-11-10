@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { X, Calendar, MapPin, CheckCircle2, Clock, Users, Download } from 'lucide-react';
-import { CommunityEvent, STATION_INFO } from '../../data/associationData';
+import { X, Calendar, MapPin, CheckCircle2, Clock, Users } from 'lucide-react';
+import { CommunityEvent } from '../../data/associationData';
 
 interface EventDetailModalProps {
   event: CommunityEvent | null;
   onClose: () => void;
-  onVolunteer: () => void;
+  onVolunteer?: () => void; // Kept so App.tsx doesn't throw a type error, but unused
 }
 
 export const EventDetailModal: React.FC<EventDetailModalProps> = ({
@@ -61,7 +61,7 @@ END:VCALENDAR`;
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -130,23 +130,14 @@ END:VCALENDAR`;
         <div className="p-6 bg-stone-50 border-t border-stone-200 rounded-b-2xl flex flex-wrap items-center justify-between gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg text-xs font-semibold text-slate-700 bg-white border border-stone-300 hover:bg-stone-100 transition-colors"
+            className="px-4 py-2 rounded-lg text-xs font-semibold text-slate-700 bg-white border border-stone-300 hover:bg-stone-100 transition-colors cursor-pointer"
           >
             Close
           </button>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => {
-                onClose();
-                onVolunteer();
-              }}
-              className="px-4 py-2 rounded-lg text-xs font-semibold text-slate-800 bg-white hover:bg-stone-100 border border-stone-300 transition-colors"
-            >
-              Volunteer for Event
-            </button>
-            <button
               onClick={handleDownloadIcs}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-950 bg-amber-500 hover:bg-amber-400 transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-950 bg-amber-500 hover:bg-amber-400 transition-colors cursor-pointer"
             >
               <Calendar className="w-4 h-4" />
               <span>Add to Calendar</span>
