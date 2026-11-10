@@ -32,17 +32,17 @@ export const Footer: React.FC<FooterProps> = ({
 
       {/* Main 4-Column Footer */}
       <div className="relative bg-[#0B1120] text-slate-300 pt-12 sm:pt-16 pb-12 border-t border-slate-800 overflow-hidden">
-        {/* Faded Out Crest Watermark on the Right (matches screenshot) */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[320px] sm:w-[460px] lg:w-[560px] pointer-events-none select-none opacity-25 sm:opacity-30 lg:opacity-35 translate-x-8 sm:translate-x-12 lg:translate-x-6 z-0">
-          <img
-            src="/images/as-logo.webp"
-            alt="Forest Firefighters Association 1888 Crest Watermark"
-            className="w-full h-auto object-contain"
-          />
-        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          {/* Faded Out Crest Watermark Locked Behind Right-Side Nav Links */}
+          <div className="absolute right-4 sm:right-6 lg:right-8 top-0 sm:top-2 w-[220px] sm:w-[260px] lg:w-[290px] pointer-events-none select-none opacity-[0.06] z-0">
+            <img
+              src="/images/as-logo.webp"
+              alt="Forest Firefighters Association 1888 Crest Watermark"
+              className="w-full h-auto object-contain"
+            />
+          </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 md:gap-10 lg:gap-8 pb-12 border-b border-slate-800/80">
+          <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 md:gap-10 lg:gap-8 pb-12 border-b border-slate-800/80">
             {/* Column 1: Association Bio & Actions */}
             <div className="lg:col-span-4 space-y-4">
               <div className="flex items-center gap-3">
@@ -304,7 +304,7 @@ export const Footer: React.FC<FooterProps> = ({
           </div>
 
           {/* Bottom Copyright Strip */}
-          <div className="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+          <div className="relative z-10 pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 gap-4">
             <div>
               © 1888–{currentYear} Forest Firefighters Association 1888. All rights reserved.
             </div>
