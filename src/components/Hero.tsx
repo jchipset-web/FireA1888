@@ -33,7 +33,7 @@ export const Hero: React.FC<HeroProps> = ({
             {/* Body Description */}
             <p className="text-base text-slate-600 leading-relaxed max-w-xl lg:max-w-2xl mb-8">
               Volunteer service and philanthropic support for Forest and
-              Lambton Shores — showing up for our neighbors for over 135 years.
+              Lambton Shores — showing up for our neighbours for over 135 years.
             </p>
 
             {/* CTAs: Equal full-width buttons on mobile, side-by-side on tablet/desktop */}
