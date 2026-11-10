@@ -79,6 +79,8 @@ export const Hero: React.FC<HeroProps> = ({
               <img
                 src="/images/as-logo.webp"
                 alt="Forest Firefighters Association Logo"
+                fetchPriority="high"
+                loading="eager"
                 className="relative z-10 w-auto h-auto object-contain max-w-[145px] sm:max-w-[200px] lg:max-w-[360px] drop-shadow-xl transition-transform duration-300 hover:scale-103"
               />
             </div>
