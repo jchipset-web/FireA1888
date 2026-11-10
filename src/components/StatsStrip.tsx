@@ -3,7 +3,7 @@ import React from 'react';
 export const StatsStrip: React.FC = () => {
   const stats = [
     {
-      kicker: '195 & LOCAL CAUSES',
+      kicker: 'LOCAL CAUSES',
       value: '$84,500+',
       description: 'Reinvested in youth athletics, municipal & local medical relief',
     },
