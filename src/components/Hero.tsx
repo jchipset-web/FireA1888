@@ -15,9 +15,9 @@ export const Hero: React.FC<HeroProps> = ({
   return (
     <section id="home" className="relative pt-10 pb-16 lg:pt-14 lg:pb-20 bg-[#FBF9F5] border-b border-stone-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          {/* Left Column: Hero Content */}
-          <div className="lg:col-span-7 flex flex-col items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
+          {/* Left Column on Desktop / Second on Mobile: Hero Content */}
+          <div className="order-2 lg:order-1 lg:col-span-7 flex flex-col items-start">
             {/* Kicker Tag */}
             <div className="text-xs font-bold tracking-wider uppercase text-amber-600 mb-4 sm:mb-6">
               <span>— SERVING BEYOND THE FIREGROUND SINCE 1888 —</span>
@@ -70,17 +70,13 @@ export const Hero: React.FC<HeroProps> = ({
             </div>
           </div>
 
-          {/* Right Column: Hero Brand Emblem / Logo Image */}
-          <div className="lg:col-span-5 w-full flex justify-center">
-            <div className="w-full max-w-md aspect-square bg-[#0F172A] rounded-2xl p-6 sm:p-8 shadow-2xl border border-slate-800 relative overflow-hidden flex items-center justify-center group">
-              {/* Subtle amber ambient glow behind logo */}
-              <div className="absolute inset-0 bg-radial from-amber-500/15 via-transparent to-transparent pointer-events-none" />
-              <img
-                src="/images/as-logo.webp"
-                alt="Forest Firefighters Association Logo"
-                className="w-full h-full object-contain max-w-[280px] max-h-[280px] sm:max-w-[330px] sm:max-h-[330px] drop-shadow-2xl transform group-hover:scale-103 transition-transform duration-300 relative z-10"
-              />
-            </div>
+          {/* Right Column on Desktop / First & Left-Aligned on Mobile: Standalone Logo Image */}
+          <div className="order-1 lg:order-2 lg:col-span-5 w-full flex justify-start lg:justify-center">
+            <img
+              src="/images/as-logo.webp"
+              alt="Forest Firefighters Association Logo"
+              className="w-full h-auto object-contain max-w-[180px] sm:max-w-[240px] lg:max-w-[360px] drop-shadow-xl transition-transform duration-300 hover:scale-103"
+            />
           </div>
         </div>
       </div>
