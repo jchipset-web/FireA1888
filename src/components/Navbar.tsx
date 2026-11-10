@@ -24,9 +24,37 @@ export const Navbar: React.FC<NavbarProps> = ({
     { name: 'Contact', href: '#contact' },
   ];
 
-  const handleNavClick = (href: string) => {
-    if (onNavigateHome) onNavigateHome();
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     setMobileMenuOpen(false);
+    
+    // Check if we are currently on a subpage (Privacy/Terms) where the home sections don't exist in the DOM
+    const isSubpage = !document.getElementById('home');
+
+    if (isSubpage && onNavigateHome) {
+      e.preventDefault();
+      onNavigateHome(); // Tell App.tsx to switch back to the main home view
+      
+      // If they clicked a specific section like #about, wait for the home page to render then scroll to it
+      if (href !== '#home') {
+        setTimeout(() => {
+          const elem = document.getElementById(href.replace('#', ''));
+          if (elem) elem.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+      return;
+    }
+
+    // If we are ALREADY on the home page and clicked the Home button/logo:
+    if (href === '#home') {
+      e.preventDefault();
+      const homeElem = document.getElementById('home');
+      if (homeElem) {
+        // This forces JS to respect the scroll-mt-24 padding instead of jamming to absolute zero
+        homeElem.scrollIntoView({ behavior: 'smooth' });
+        window.history.pushState(null, '', '#home');
+      }
+    }
+    // For all other links (#about, #fleet) on the home page, do nothing and let the native HTML anchor handle it perfectly!
   };
 
   return (
@@ -38,7 +66,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Zone 1: Brand Wordmark (Text-only) */}
             <a
               href="#home"
-              onClick={() => handleNavClick('#home')}
+              onClick={(e) => handleNavClick(e, '#home')}
               className="flex flex-col justify-center min-w-0 flex-1 sm:flex-initial group py-1"
             >
               <span className="font-extrabold text-base sm:text-lg tracking-tight text-slate-900 uppercase leading-tight group-hover:text-amber-600 transition-colors truncate">
@@ -55,7 +83,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <a
                   key={link.name}
                   href={link.href}
-                  onClick={() => handleNavClick(link.href)}
+                  onClick={(e) => handleNavClick(e, link.href)}
                   className="hover:text-amber-600 transition-colors py-1 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-amber-500 hover:after:w-full after:transition-all"
                 >
                   {link.name}
@@ -81,7 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             </div>
 
-            {/* Mobile Action Cluster: Always fits on screen */}
+            {/* Mobile Action Cluster */}
             <div className="flex xl:hidden items-center gap-1.5 sm:gap-2 shrink-0">
               <button
                 onClick={onOpenDonation}
@@ -109,7 +137,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <a
                   key={link.name}
                   href={link.href}
-                  onClick={() => handleNavClick(link.href)}
+                  onClick={(e) => handleNavClick(e, link.href)}
                   className="block px-3 py-2.5 rounded-md text-base font-medium text-slate-800 hover:bg-amber-50 hover:text-amber-700 transition-colors"
                 >
                   {link.name}
