@@ -25,36 +25,39 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // 1. Completely block the native instant HTML jump that hides headers
+    e.preventDefault(); 
     setMobileMenuOpen(false);
     
-    // Check if we are currently on a subpage (Privacy/Terms) where the home sections don't exist in the DOM
+    // 2. Check if we are currently on a subpage (Privacy/Terms)
     const isSubpage = !document.getElementById('home');
 
     if (isSubpage && onNavigateHome) {
-      e.preventDefault();
-      onNavigateHome(); // Tell App.tsx to switch back to the main home view
+      onNavigateHome(); // Switch React state back to home
       
-      // If they clicked a specific section like #about, wait for the home page to render then scroll to it
+      // If they clicked a section like #about, wait for the home page to render then scroll to it
       if (href !== '#home') {
         setTimeout(() => {
           const elem = document.getElementById(href.replace('#', ''));
           if (elem) elem.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+        }, 150);
       }
       return;
     }
 
-    // If we are ALREADY on the home page and clicked the Home button/logo:
+    // 3. If clicking Home, force the browser to Absolute Zero so mobile address bars don't interrupt it
     if (href === '#home') {
-      e.preventDefault();
-      const homeElem = document.getElementById('home');
-      if (homeElem) {
-        // This forces JS to respect the scroll-mt-24 padding instead of jamming to absolute zero
-        homeElem.scrollIntoView({ behavior: 'smooth' });
-        window.history.pushState(null, '', '#home');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.history.pushState(null, '', '#home');
+    } 
+    // 4. For all other links, smoothly scroll to their exact spot (respecting our scroll-mt-24 CSS)
+    else {
+      const elem = document.getElementById(href.replace('#', ''));
+      if (elem) {
+        elem.scrollIntoView({ behavior: 'smooth' });
+        window.history.pushState(null, '', href);
       }
     }
-    // For all other links (#about, #fleet) on the home page, do nothing and let the native HTML anchor handle it perfectly!
   };
 
   return (
