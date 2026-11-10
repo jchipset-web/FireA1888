@@ -34,7 +34,7 @@ export const Footer: React.FC<FooterProps> = ({
       <div className="relative bg-[#0B1120] text-slate-300 pt-12 sm:pt-16 pb-12 border-t border-slate-800 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           {/* Faded Out Crest Watermark Locked Behind Right-Side Nav Links */}
-          <div className="absolute right-4 sm:right-6 lg:right-8 top-0 sm:top-2 w-[220px] sm:w-[260px] lg:w-[290px] pointer-events-none select-none opacity-[0.06] z-0">
+          <div className="absolute right-4 sm:right-6 lg:right-8 top-0 sm:top-2 w-[220px] sm:w-[260px] lg:w-[290px] pointer-events-none select-none opacity-[0.16] z-0">
             <img
               src="/images/as-logo.webp"
               alt="Forest Firefighters Association 1888 Crest Watermark"
