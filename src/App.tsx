@@ -150,7 +150,7 @@ export default function App() {
   const handleScrollToEvents = () => scrollToSection('events');
 
   const handleOpenCalendar = () => {
-    setSelectedEvent(EVENTS_DATA[0]);
+    scrollToSection('events');
   };
 
   return (
