@@ -31,9 +31,8 @@ export const Hero: React.FC<HeroProps> = ({
 
             {/* Body Description */}
             <p className="text-base text-slate-600 leading-relaxed max-w-2xl mb-8">
-              We deliver high-impact volunteer service and philanthropic support for Forest and
-              Lambton Shores — funding youth athletics, preserving our 1922 historic pumper, and
-              showing up for our neighbors for over 135 years.
+              Volunteer service and philanthropic support for Forest and
+              Lambton Shores — Showing up for our neighbors for over 135 years.
             </p>
 
             {/* CTAs */}
@@ -77,7 +76,7 @@ export const Hero: React.FC<HeroProps> = ({
               {/* Subtle amber ambient glow behind logo */}
               <div className="absolute inset-0 bg-radial from-amber-500/15 via-transparent to-transparent pointer-events-none" />
               <img
-                src="/images/station2_patch.png"
+                src="/images/as-logo.webp"
                 alt="Forest Firefighters Association Logo"
                 className="w-full h-full object-contain max-w-[280px] max-h-[280px] sm:max-w-[330px] sm:max-h-[330px] drop-shadow-2xl transform group-hover:scale-103 transition-transform duration-300 relative z-10"
               />
