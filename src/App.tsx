@@ -1,28 +1,64 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { StatsStrip } from './components/StatsStrip';
-import { AboutSection } from './components/AboutSection';
-import { FleetSection } from './components/FleetSection';
-import { LeadershipSection } from './components/LeadershipSection';
-import { EventsSection } from './components/EventsSection';
-import { DocumentRepository } from './components/DocumentRepository';
-import { DonationSection } from './components/DonationSection';
-import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 
-import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
-import { TermsOfServicePage } from './pages/TermsOfServicePage';
-import { FireSafetyPage } from './pages/FireSafetyPage';
-import { RuralPropertyChecklistPage } from './pages/RuralPropertyChecklistPage';
-
-import { DocumentModal } from './components/Modals/DocumentModal';
-import { DonationModal } from './components/Modals/DonationModal';
-import { MemberPortalModal } from './components/Modals/MemberPortalModal';
-import { RigDetailModal } from './components/Modals/RigDetailModal';
-import { EventDetailModal } from './components/Modals/EventDetailModal';
-
 import { ArchiveDocument, FleetRig, CommunityEvent, BoardMember, EVENTS_DATA } from './data/associationData';
+
+// Lazy-load Below-the-Fold Home Sections
+const AboutSection = lazy(() =>
+  import('./components/AboutSection').then((m) => ({ default: m.AboutSection }))
+);
+const FleetSection = lazy(() =>
+  import('./components/FleetSection').then((m) => ({ default: m.FleetSection }))
+);
+const LeadershipSection = lazy(() =>
+  import('./components/LeadershipSection').then((m) => ({ default: m.LeadershipSection }))
+);
+const EventsSection = lazy(() =>
+  import('./components/EventsSection').then((m) => ({ default: m.EventsSection }))
+);
+const DocumentRepository = lazy(() =>
+  import('./components/DocumentRepository').then((m) => ({ default: m.DocumentRepository }))
+);
+const DonationSection = lazy(() =>
+  import('./components/DonationSection').then((m) => ({ default: m.DonationSection }))
+);
+const ContactSection = lazy(() =>
+  import('./components/ContactSection').then((m) => ({ default: m.ContactSection }))
+);
+
+// Lazy-load Secondary Pages (Only downloaded if a user navigates to them)
+const PrivacyPolicyPage = lazy(() =>
+  import('./pages/PrivacyPolicyPage').then((m) => ({ default: m.PrivacyPolicyPage }))
+);
+const TermsOfServicePage = lazy(() =>
+  import('./pages/TermsOfServicePage').then((m) => ({ default: m.TermsOfServicePage }))
+);
+const FireSafetyPage = lazy(() =>
+  import('./pages/FireSafetyPage').then((m) => ({ default: m.FireSafetyPage }))
+);
+const RuralPropertyChecklistPage = lazy(() =>
+  import('./pages/RuralPropertyChecklistPage').then((m) => ({ default: m.RuralPropertyChecklistPage }))
+);
+
+// Lazy-load Interactive Modals (Only downloaded when needed)
+const DocumentModal = lazy(() =>
+  import('./components/Modals/DocumentModal').then((m) => ({ default: m.DocumentModal }))
+);
+const DonationModal = lazy(() =>
+  import('./components/Modals/DonationModal').then((m) => ({ default: m.DonationModal }))
+);
+const MemberPortalModal = lazy(() =>
+  import('./components/Modals/MemberPortalModal').then((m) => ({ default: m.MemberPortalModal }))
+);
+const RigDetailModal = lazy(() =>
+  import('./components/Modals/RigDetailModal').then((m) => ({ default: m.RigDetailModal }))
+);
+const EventDetailModal = lazy(() =>
+  import('./components/Modals/EventDetailModal').then((m) => ({ default: m.EventDetailModal }))
+);
 
 export type PageView = 'home' | 'privacy' | 'terms' | 'fire-safety' | 'rural-checklist';
 
@@ -79,42 +115,33 @@ export default function App() {
     setDonationModalOpen(true);
   };
 
-  const handleScrollToContact = () => {
+  const scrollToSection = (sectionId: string) => {
+    const attemptScroll = (attemptsLeft: number) => {
+      const elem = document.getElementById(sectionId);
+      if (elem) {
+        elem.scrollIntoView({ behavior: 'smooth' });
+      } else if (attemptsLeft > 0) {
+        setTimeout(() => attemptScroll(attemptsLeft - 1), 100);
+      }
+    };
+
     if (currentView !== 'home') {
       navigateTo('home');
-      setTimeout(() => {
-        const contactElem = document.getElementById('contact');
-        if (contactElem) contactElem.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
+      setTimeout(() => attemptScroll(10), 100);
     } else {
-      const contactElem = document.getElementById('contact');
-      if (contactElem) {
-        contactElem.scrollIntoView({ behavior: 'smooth' });
-      }
+      attemptScroll(10);
     }
   };
 
-  const handleScrollToEvents = () => {
-    if (currentView !== 'home') {
-      navigateTo('home');
-      setTimeout(() => {
-        const eventsElem = document.getElementById('events');
-        if (eventsElem) eventsElem.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    } else {
-      const eventsElem = document.getElementById('events');
-      if (eventsElem) {
-        eventsElem.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  };
+  const handleScrollToContact = () => scrollToSection('contact');
+  const handleScrollToEvents = () => scrollToSection('events');
 
   const handleOpenCalendar = () => {
     setSelectedEvent(EVENTS_DATA[0]);
   };
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#FBF9F5] text-slate-800 flex flex-col font-sans selection:bg-amber-200 selection:text-amber-900">
+    <div className="min-h-screen w-full max-w-full bg-[#FBF9F5] text-slate-800 flex flex-col font-sans selection:bg-amber-200 selection:text-amber-900">
       {/* Top Header & Navigation */}
       <Navbar
         onOpenDonation={() => handleOpenDonation(50)}
@@ -123,26 +150,10 @@ export default function App() {
       />
 
       {/* Main Content Area: Render Current Page View */}
-      <main className="grow">
-        {currentView === 'privacy' && (
-          <PrivacyPolicyPage onBackToHome={() => navigateTo('home')} />
-        )}
-
-        {currentView === 'terms' && (
-          <TermsOfServicePage onBackToHome={() => navigateTo('home')} />
-        )}
-
-        {currentView === 'fire-safety' && (
-          <FireSafetyPage onBackToHome={() => navigateTo('home')} />
-        )}
-
-        {currentView === 'rural-checklist' && (
-          <RuralPropertyChecklistPage onBackToHome={() => navigateTo('home')} />
-        )}
-
-        {currentView === 'home' && (
+      <main className="grow overflow-x-hidden">
+        {currentView === 'home' ? (
           <>
-            {/* Hero Section */}
+            {/* Eagerly Loaded Above-the-Fold Content for Instant Paint */}
             <Hero
               onOpenDonation={() => handleOpenDonation(50)}
               onOpenEvents={handleScrollToEvents}
@@ -152,39 +163,66 @@ export default function App() {
             {/* 4 Statistical Metrics Strip */}
             <StatsStrip />
 
-            {/* About Section: Quality That Lasts & Historic Brigade */}
-            <AboutSection />
+            {/* Lazy-Loaded Below-the-Fold Sections */}
+            <Suspense fallback={<div className="min-h-[400px]" aria-hidden="true" />}>
+              {/* About Section: Quality That Lasts & Historic Brigade */}
+              <AboutSection />
 
-            {/* Motorized Apparatus Roll: 1922 Bickle & Retired Legends */}
-            <FleetSection
-              onSelectRig={(rig) => setSelectedRig(rig)}
-              onRequestAppearance={handleScrollToContact}
-            />
+              {/* Motorized Apparatus Roll: 1922 Bickle & Retired Legends */}
+              <FleetSection
+                onSelectRig={(rig) => setSelectedRig(rig)}
+                onRequestAppearance={handleScrollToContact}
+              />
 
-            {/* Executive Board & Leadership */}
-            <LeadershipSection
-              onContactOfficer={(_officer: BoardMember) => handleScrollToContact()}
-            />
+              {/* Executive Board & Leadership */}
+              <LeadershipSection
+                onContactOfficer={(_officer: BoardMember) => handleScrollToContact()}
+              />
 
-            {/* Upcoming Events & Community Traditions + Sponsors */}
-            <EventsSection
-              onSelectEvent={(event) => setSelectedEvent(event)}
-              onOpenCalendar={handleOpenCalendar}
-            />
+              {/* Upcoming Events & Community Traditions + Sponsors */}
+              <EventsSection
+                onSelectEvent={(event) => setSelectedEvent(event)}
+                onOpenCalendar={handleOpenCalendar}
+              />
 
-            {/* Community Ledger & Document Repository */}
-            <DocumentRepository
-              onOpenDocument={(doc) => setSelectedDocument(doc)}
-            />
+              {/* Community Ledger & Document Repository */}
+              <DocumentRepository
+                onOpenDocument={(doc) => setSelectedDocument(doc)}
+              />
 
-            {/* Direct Local Stewardship: Donations & Philanthropy */}
-            <DonationSection
-              onTriggerCheckout={(amount, impact) => handleOpenDonation(amount, impact)}
-            />
+              {/* Direct Local Stewardship: Donations & Philanthropy */}
+              <DonationSection
+                onTriggerCheckout={(amount, impact) => handleOpenDonation(amount, impact)}
+              />
 
-            {/* Official Dispatch & Correspondence */}
-            <ContactSection />
+              {/* Official Dispatch & Correspondence */}
+              <ContactSection />
+            </Suspense>
           </>
+        ) : (
+          <Suspense
+            fallback={
+              <div className="min-h-[60vh] flex items-center justify-center text-sm font-medium text-slate-500">
+                Loading page...
+              </div>
+            }
+          >
+            {currentView === 'privacy' && (
+              <PrivacyPolicyPage onBackToHome={() => navigateTo('home')} />
+            )}
+
+            {currentView === 'terms' && (
+              <TermsOfServicePage onBackToHome={() => navigateTo('home')} />
+            )}
+
+            {currentView === 'fire-safety' && (
+              <FireSafetyPage onBackToHome={() => navigateTo('home')} />
+            )}
+
+            {currentView === 'rural-checklist' && (
+              <RuralPropertyChecklistPage onBackToHome={() => navigateTo('home')} />
+            )}
+          </Suspense>
         )}
       </main>
 
@@ -196,35 +234,47 @@ export default function App() {
         onNavigate={(page) => navigateTo(page)}
       />
 
-      {/* Interactive Modals */}
-      <DocumentModal
-        document={selectedDocument}
-        onClose={() => setSelectedDocument(null)}
-      />
+      {/* Lazy-Loaded Interactive Modals */}
+      <Suspense fallback={null}>
+        {selectedDocument && (
+          <DocumentModal
+            document={selectedDocument}
+            onClose={() => setSelectedDocument(null)}
+          />
+        )}
 
-      <DonationModal
-        initialAmount={donationAmount}
-        initialImpact={donationImpact}
-        isOpen={donationModalOpen}
-        onClose={() => setDonationModalOpen(false)}
-      />
+        {donationModalOpen && (
+          <DonationModal
+            initialAmount={donationAmount}
+            initialImpact={donationImpact}
+            isOpen={donationModalOpen}
+            onClose={() => setDonationModalOpen(false)}
+          />
+        )}
 
-      <MemberPortalModal
-        isOpen={memberPortalOpen}
-        onClose={() => setMemberPortalOpen(false)}
-      />
+        {memberPortalOpen && (
+          <MemberPortalModal
+            isOpen={memberPortalOpen}
+            onClose={() => setMemberPortalOpen(false)}
+          />
+        )}
 
-      <RigDetailModal
-        rig={selectedRig}
-        onClose={() => setSelectedRig(null)}
-        onRequestAppearance={handleScrollToContact}
-      />
+        {selectedRig && (
+          <RigDetailModal
+            rig={selectedRig}
+            onClose={() => setSelectedRig(null)}
+            onRequestAppearance={handleScrollToContact}
+          />
+        )}
 
-      <EventDetailModal
-        event={selectedEvent}
-        onClose={() => setSelectedEvent(null)}
-        onVolunteer={handleScrollToContact}
-      />
+        {selectedEvent && (
+          <EventDetailModal
+            event={selectedEvent}
+            onClose={() => setSelectedEvent(null)}
+            onVolunteer={handleScrollToContact}
+          />
+        )}
+      </Suspense>
     </div>
   );
 }
