@@ -48,7 +48,7 @@ export const Footer: React.FC<FooterProps> = ({
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-amber-500 p-1 flex items-center justify-center">
                   <img
-                    src="/images/station2_patch.png"
+                    src="/images/as-logo.webp"
                     alt="Station 2 Badge"
                     className="w-full h-full object-contain"
                   />
