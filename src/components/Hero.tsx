@@ -13,7 +13,7 @@ export const Hero: React.FC<HeroProps> = ({
   onOpenCalendar,
 }) => {
   return (
-    <section id="home" className="relative pt-8 pb-14 lg:pt-14 lg:pb-20 bg-[#FBF9F5] border-b border-stone-200 overflow-hidden">
+    <section id="home" className="relative pt-8 pb-14 lg:pt-14 lg:pb-20 bg-[#FBF9F5] border-b border-stone-200 overflow-hidden scroll-mt-24">
       <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
           
