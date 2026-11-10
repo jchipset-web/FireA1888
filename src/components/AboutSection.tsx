@@ -25,7 +25,7 @@ export const AboutSection: React.FC = () => {
             Positive Change <span className="text-amber-500">That Last</span>
           </h2>
           <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
-            The Forest Firefighters Association 1888 was built on a lasting brotherhood and a deep
+            The Forest Firefighters Association 1888 was built on a lasting bond and a deep
             commitment to our community.
           </p>
         </div>
