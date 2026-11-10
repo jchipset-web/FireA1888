@@ -35,7 +35,7 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Faded Out Crest Watermark on the Right (matches screenshot) */}
         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[320px] sm:w-[460px] lg:w-[560px] pointer-events-none select-none opacity-25 sm:opacity-30 lg:opacity-35 translate-x-8 sm:translate-x-12 lg:translate-x-6 z-0">
           <img
-            src="/images/footer_crest_watermark.svg"
+            src="/images/as-logo.webp"
             alt="Forest Firefighters Association 1888 Crest Watermark"
             className="w-full h-auto object-contain"
           />
