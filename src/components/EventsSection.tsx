@@ -14,8 +14,8 @@ export const EventsSection: React.FC<EventsSectionProps> = ({
   const [mobileEventsExpanded, setMobileEventsExpanded] = React.useState(false);
 
   return (
-    <section id="community" className="py-16 sm:py-24 bg-white border-b border-stone-200 scroll-mt-10">
-      <div id="events" className="-mt-10 pt-10" />
+    <section id="community" className="py-16 sm:py-24 bg-white border-b border-stone-200 scroll-mt-24">
+  <div id="events" className="scroll-mt-28" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
