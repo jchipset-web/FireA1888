@@ -15,7 +15,6 @@ export const EventsSection: React.FC<EventsSectionProps> = ({
 
   return (
     <section id="community" className="py-16 sm:py-24 bg-white border-b border-stone-200 scroll-mt-24">
-  <div id="events" className="scroll-mt-28" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -101,7 +100,7 @@ export const EventsSection: React.FC<EventsSectionProps> = ({
         </div>
 
         {/* 4 Community Events Grid - on mobile only show top 2 unless expanded */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 sm:mb-20">
+        <div id="events" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 sm:mb-20 scroll-mt-28">
           {EVENTS_DATA.map((event, index) => {
             const isHiddenOnMobile = !mobileEventsExpanded && index >= 2;
             return (
