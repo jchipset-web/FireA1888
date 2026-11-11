@@ -11,7 +11,7 @@ import { MemberPortalModal } from './components/Modals/MemberPortalModal';
 import { RigDetailModal } from './components/Modals/RigDetailModal';
 import { EventDetailModal } from './components/Modals/EventDetailModal';
 
-import { ArchiveDocument, FleetRig, CommunityEvent, BoardMember, EVENTS_DATA } from './data/associationData';
+import { ArchiveDocument, FleetRig, CommunityEvent, BoardMember } from './data/associationData';
 
 // Safe lazy-loader that prevents the "White Screen of Death" if a new deployment happens while a user has the tab open
 function lazyWithRetry<T extends React.ComponentType<any>>(
@@ -67,8 +67,17 @@ const FireSafetyPage = lazyWithRetry(() =>
 const RuralPropertyChecklistPage = lazyWithRetry(() =>
   import('./pages/RuralPropertyChecklistPage').then((m) => ({ default: m.RuralPropertyChecklistPage }))
 );
+const ExpenseSheetPage = lazyWithRetry(() =>
+  import('./pages/ExpenseSheetPage').then((m) => ({ default: m.ExpenseSheetPage }))
+);
 
-export type PageView = 'home' | 'privacy' | 'terms' | 'fire-safety' | 'rural-checklist';
+export type PageView =
+  | 'home'
+  | 'privacy'
+  | 'terms'
+  | 'fire-safety'
+  | 'rural-checklist'
+  | 'expense-sheet';
 
 export default function App() {
   // Page view routing
@@ -102,6 +111,8 @@ export default function App() {
         setCurrentView('fire-safety');
       } else if (hash.includes('rural-checklist') || hash.includes('rural-property')) {
         setCurrentView('rural-checklist');
+      } else if (hash.includes('expense')) {
+        setCurrentView('expense-sheet');
       } else {
         setCurrentView('home');
       }
@@ -234,6 +245,10 @@ export default function App() {
 
             {currentView === 'rural-checklist' && (
               <RuralPropertyChecklistPage onBackToHome={() => navigateTo('home')} />
+            )}
+
+            {currentView === 'expense-sheet' && (
+              <ExpenseSheetPage onBackToHome={() => navigateTo('home')} />
             )}
           </Suspense>
         )}
