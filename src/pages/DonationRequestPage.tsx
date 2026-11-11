@@ -13,6 +13,7 @@ import {
   Users,
   ShieldCheck,
   FileText,
+  CalendarClock,
 } from 'lucide-react';
 import { STATION_INFO } from '../data/associationData';
 
@@ -200,7 +201,7 @@ export const DonationRequestPage: React.FC<DonationRequestPageProps> = ({ onBack
                   Donation Request Form
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
-                  Submit your organization&apos;s information and funding request for consideration by the Forest Firefighters Association 1888 Executive Board.
+                  Submit your organization&apos;s information and funding request for consideration by the Forest Firefighters Association 1888.
                 </p>
               </div>
 
@@ -258,7 +259,7 @@ export const DonationRequestPage: React.FC<DonationRequestPageProps> = ({ onBack
                 </div>
               </div>
 
-              {/* Organization Name (Helpful context alongside contact name) */}
+              {/* Organization Name */}
               <div>
                 <label
                   htmlFor="organizationName"
@@ -517,18 +518,32 @@ export const DonationRequestPage: React.FC<DonationRequestPageProps> = ({ onBack
               </div>
             </section>
 
-            {/* Submit Button Footer */}
-            <div className="pt-6 border-t-2 border-stone-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 print:hidden">
-              <p className="text-xs text-slate-500">
-                Requests are reviewed by the <span className="font-semibold text-slate-700">Forest Firefighters Association 1888</span> Board.
-              </p>
-              <button
-                type="submit"
-                className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider text-amber-400 bg-[#0F172A] hover:bg-slate-800 border-2 border-amber-500 shadow-md hover:shadow-lg transition-all cursor-pointer"
-              >
-                <Send className="w-4 h-4 text-amber-400" />
-                <span>Submit Donation Request</span>
-              </button>
+            {/* Submit & Review Schedule Footer */}
+            <div className="pt-6 border-t-2 border-stone-200 space-y-5 print:hidden">
+              {/* Review Schedule Notice Box */}
+              <div className="bg-amber-50/90 border border-amber-200 rounded-xl p-4 flex items-start gap-3 text-xs sm:text-sm text-amber-950">
+                <CalendarClock className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-bold">Review Schedule:</span> All funding requests are reviewed and voted on by Association members during our monthly meeting on the{' '}
+                  <span className="font-bold underline decoration-amber-400 underline-offset-2">
+                    third week of each month
+                  </span>
+                  . Please submit your application ahead of time if your event or project is time-sensitive.
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+                <p className="text-xs text-slate-500">
+                  Submitted directly to the <span className="font-semibold text-slate-700">Forest Firefighters Association 1888</span>.
+                </p>
+                <button
+                  type="submit"
+                  className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider text-amber-400 bg-[#0F172A] hover:bg-slate-800 border-2 border-amber-500 shadow-md hover:shadow-lg transition-all cursor-pointer"
+                >
+                  <Send className="w-4 h-4 text-amber-400" />
+                  <span>Submit Donation Request</span>
+                </button>
+              </div>
             </div>
           </div>
         </form>
@@ -553,7 +568,7 @@ export const DonationRequestPage: React.FC<DonationRequestPageProps> = ({ onBack
             </h3>
             <p className="text-xs sm:text-sm text-slate-600 mb-4">
               Click <span className="font-bold text-slate-800">Send Request via Email</span> below to transmit your completed funding request directly to{' '}
-              <span className="font-mono text-xs text-amber-800">{STATION_INFO.email}</span>, or copy the summary text below.
+              <span className="font-mono text-xs text-amber-800">{STATION_INFO.email}</span>. Association members review all requests during the <span className="font-semibold text-slate-800">third week of each month</span>.
             </p>
 
             {/* Quick Summary Preview */}
