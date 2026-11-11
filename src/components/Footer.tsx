@@ -1,12 +1,12 @@
 import React from 'react';
-import { AlertTriangle, Heart, Key, Lock, MapPin, Mail, ChevronDown } from 'lucide-react';
+import { AlertTriangle, Heart, Key, Lock, MapPin, Mail, ChevronDown, Receipt } from 'lucide-react';
 import { STATION_INFO } from '../data/associationData';
 
 interface FooterProps {
   onOpenDonation: () => void;
   onOpenMemberPortal: () => void;
   onOpenCalendar: () => void;
-  onNavigate: (page: 'home' | 'privacy' | 'terms' | 'fire-safety' | 'rural-checklist') => void;
+  onNavigate: (page: 'home' | 'privacy' | 'terms' | 'fire-safety' | 'rural-checklist' | 'expense-sheet') => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -287,6 +287,15 @@ export const Footer: React.FC<FooterProps> = ({
                     >
                       Contact Form & Inquiries
                     </a>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => onNavigate('expense-sheet')}
+                      className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
+                    >
+                      <Receipt className="w-3.5 h-3.5" />
+                      <span>Event Expense Sheet (Members)</span>
+                    </button>
                   </li>
                   <li>
                     <button
