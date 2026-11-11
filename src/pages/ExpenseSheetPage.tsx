@@ -280,7 +280,7 @@ export const ExpenseSheetPage: React.FC<ExpenseSheetPageProps> = ({ onBackToHome
         <div className="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 mb-6 flex items-start gap-3 text-xs sm:text-sm text-amber-950 print:hidden">
           <Calculator className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
           <div>
-            <span className="font-bold">Member Event Settlement Sheet:</span> Count your physical bill denominations on the left (or enter dollar amounts directly), record any event expenses on the right, and click{' '}
+            <span className="font-bold">Member Event Settlement Sheet:</span> Count your physical bill denominations, record any event expenses, review your net total reconciliation, and click{' '}
             <span className="font-semibold">Submit to Treasurer</span> at the bottom to send your final tally to Cody Wilcox.
           </div>
         </div>
@@ -519,9 +519,11 @@ export const ExpenseSheetPage: React.FC<ExpenseSheetPageProps> = ({ onBackToHome
 
             {/* RIGHT COLUMN: Gross/Expenses/Net Summary + Expense Itemization */}
             <div className="lg:col-span-6 p-4 sm:p-6 flex flex-col justify-between bg-white">
-              <div>
-                {/* Top Summary Box (Mirrors GROSS TOTAL / EXPENSES / NET TOTAL in Excel) */}
-                <div className="bg-[#0F172A] text-white rounded-2xl p-4 sm:p-5 mb-6 border-2 border-amber-500 shadow-sm">
+              {/* Flex container swaps order between Mobile (Expenses -> Summary) and Desktop (Summary -> Expenses) */}
+              <div className="flex flex-col">
+                
+                {/* Summary Box: 2nd on Mobile (below expenses), 1st on Desktop (top right) */}
+                <div className="order-2 lg:order-1 mt-6 lg:mt-0 lg:mb-6 bg-[#0F172A] text-white rounded-2xl p-4 sm:p-5 border-2 border-amber-500 shadow-sm">
                   <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-400 mb-3 pb-2 border-b border-slate-800">
                     Event Financial Reconciliation
                   </div>
@@ -557,89 +559,92 @@ export const ExpenseSheetPage: React.FC<ExpenseSheetPageProps> = ({ onBackToHome
                   </div>
                 </div>
 
-                {/* Expense Itemization Table */}
-                <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-xs font-mono font-extrabold uppercase tracking-wider text-slate-900">
-                    2. Expense Itemization
-                  </h2>
-                  <button
-                    type="button"
-                    onClick={handleAddExpenseRow}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white hover:bg-slate-800 transition-colors cursor-pointer print:hidden"
-                  >
-                    <Plus className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Add Row</span>
-                  </button>
-                </div>
+                {/* Expense Itemization Table: 1st on Mobile, 2nd on Desktop */}
+                <div className="order-1 lg:order-2">
+                  <div className="flex items-center justify-between mb-3">
+                    <h2 className="text-xs font-mono font-extrabold uppercase tracking-wider text-slate-900">
+                      2. Expense Itemization
+                    </h2>
+                    <button
+                      type="button"
+                      onClick={handleAddExpenseRow}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white hover:bg-slate-800 transition-colors cursor-pointer print:hidden"
+                    >
+                      <Plus className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Add Row</span>
+                    </button>
+                  </div>
 
-                <div className="border border-stone-300 rounded-xl overflow-hidden bg-white shadow-2xs">
-                  <table className="w-full border-collapse text-sm">
-                    <thead>
-                      <tr className="bg-slate-900 text-white text-[11px] font-mono uppercase tracking-wider">
-                        <th className="py-2.5 px-3 text-left">Expense Item</th>
-                        <th className="py-2.5 px-3 text-right w-32 sm:w-36">$ Amount</th>
-                        <th className="py-2.5 px-2 text-center w-10 print:hidden" aria-label="Remove">
-                          &nbsp;
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-stone-200">
-                      {expenses.map((item, idx) => (
-                        <tr key={item.id} className="hover:bg-stone-50/80 transition-colors">
-                          <td className="p-1.5">
-                            <input
-                              type="text"
-                              placeholder={`Expense item #${idx + 1} (e.g., Ice, BBQ, Referee)`}
-                              value={item.description}
-                              onChange={(e) =>
-                                handleExpenseChange(item.id, 'description', e.target.value)
-                              }
-                              className="w-full py-1.5 px-2.5 bg-stone-50 border border-stone-300 rounded-lg text-base sm:text-sm text-slate-900 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none"
-                            />
+                  <div className="border border-stone-300 rounded-xl overflow-hidden bg-white shadow-2xs">
+                    <table className="w-full border-collapse text-sm">
+                      <thead>
+                        <tr className="bg-slate-900 text-white text-[11px] font-mono uppercase tracking-wider">
+                          <th className="py-2.5 px-3 text-left">Expense Item</th>
+                          <th className="py-2.5 px-3 text-right w-32 sm:w-36">$ Amount</th>
+                          <th className="py-2.5 px-2 text-center w-10 print:hidden" aria-label="Remove">
+                            &nbsp;
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-stone-200">
+                        {expenses.map((item, idx) => (
+                          <tr key={item.id} className="hover:bg-stone-50/80 transition-colors">
+                            <td className="p-1.5">
+                              <input
+                                type="text"
+                                placeholder={`Expense item #${idx + 1} (e.g., Ice, BBQ, Referee)`}
+                                value={item.description}
+                                onChange={(e) =>
+                                  handleExpenseChange(item.id, 'description', e.target.value)
+                                }
+                                className="w-full py-1.5 px-2.5 bg-stone-50 border border-stone-300 rounded-lg text-base sm:text-sm text-slate-900 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                              />
+                            </td>
+                            <td className="p-1.5">
+                              <input
+                                type="number"
+                                inputMode="decimal"
+                                step="0.01"
+                                min="0"
+                                placeholder="0.00"
+                                value={item.amount}
+                                onFocus={(e) => e.target.select()}
+                                onChange={(e) =>
+                                  handleExpenseChange(item.id, 'amount', e.target.value)
+                                }
+                                className="w-full text-right py-1.5 px-2.5 bg-stone-50 border border-stone-300 rounded-lg font-mono text-base sm:text-sm font-semibold text-slate-900 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                              />
+                            </td>
+                            <td className="p-1 text-center print:hidden">
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveExpenseRow(item.id)}
+                                className="p-1.5 text-stone-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
+                                aria-label="Remove expense row"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                      <tfoot>
+                        <tr className="bg-rose-50/80 border-t-2 border-stone-300 font-extrabold text-slate-900">
+                          <td className="py-3 px-3 text-right font-mono text-xs uppercase">
+                            Total Expenses:
                           </td>
-                          <td className="p-1.5">
-                            <input
-                              type="number"
-                              inputMode="decimal"
-                              step="0.01"
-                              min="0"
-                              placeholder="0.00"
-                              value={item.amount}
-                              onFocus={(e) => e.target.select()}
-                              onChange={(e) =>
-                                handleExpenseChange(item.id, 'amount', e.target.value)
-                              }
-                              className="w-full text-right py-1.5 px-2.5 bg-stone-50 border border-stone-300 rounded-lg font-mono text-base sm:text-sm font-semibold text-slate-900 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none"
-                            />
-                          </td>
-                          <td className="p-1 text-center print:hidden">
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveExpenseRow(item.id)}
-                              className="p-1.5 text-stone-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
-                              aria-label="Remove expense row"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                          <td
+                            colSpan={2}
+                            className="py-3 px-3 text-right font-mono text-base text-rose-900"
+                          >
+                            {formatCurrency(calculations.totalExpenses)}
                           </td>
                         </tr>
-                      ))}
-                    </tbody>
-                    <tfoot>
-                      <tr className="bg-rose-50/80 border-t-2 border-stone-300 font-extrabold text-slate-900">
-                        <td className="py-3 px-3 text-right font-mono text-xs uppercase">
-                          Total Expenses:
-                        </td>
-                        <td
-                          colSpan={2}
-                          className="py-3 px-3 text-right font-mono text-base text-rose-900"
-                        >
-                          {formatCurrency(calculations.totalExpenses)}
-                        </td>
-                      </tr>
-                    </tfoot>
-                  </table>
+                      </tfoot>
+                    </table>
+                  </div>
                 </div>
+
               </div>
 
               {/* Submit Footer */}
