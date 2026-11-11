@@ -1,12 +1,31 @@
 import React from 'react';
-import { AlertTriangle, Heart, Key, Lock, MapPin, Mail, ChevronDown, Receipt } from 'lucide-react';
+import {
+  AlertTriangle,
+  Heart,
+  Key,
+  Lock,
+  MapPin,
+  Mail,
+  ChevronDown,
+  Receipt,
+  HeartHandshake,
+} from 'lucide-react';
 import { STATION_INFO } from '../data/associationData';
 
 interface FooterProps {
   onOpenDonation: () => void;
   onOpenMemberPortal: () => void;
   onOpenCalendar: () => void;
-  onNavigate: (page: 'home' | 'privacy' | 'terms' | 'fire-safety' | 'rural-checklist' | 'expense-sheet') => void;
+  onNavigate: (
+    page:
+      | 'home'
+      | 'privacy'
+      | 'terms'
+      | 'fire-safety'
+      | 'rural-checklist'
+      | 'expense-sheet'
+      | 'donation-request'
+  ) => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -50,7 +69,7 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
 
             <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 md:gap-10 lg:gap-8">
-              {/* Column 1: Association Bio & Actions (Mini orange logo removed) */}
+              {/* Column 1: Association Bio & Actions */}
               <div className="lg:col-span-4 space-y-4">
                 <div>
                   <div className="font-extrabold text-white text-lg tracking-tight uppercase leading-tight">
@@ -271,38 +290,29 @@ export const Footer: React.FC<FooterProps> = ({
                     </button>
                   </li>
                   <li>
-                    <a
-                      href="#events"
-                      onClick={() => onNavigate('home')}
-                      className="hover:text-amber-400 transition-colors"
+                    <button
+                      onClick={() => onNavigate('donation-request')}
+                      className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 transition-colors text-left cursor-pointer"
                     >
-                      Tinted Sponsor Wall
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#contact"
-                      onClick={() => onNavigate('home')}
-                      className="hover:text-amber-400 transition-colors"
-                    >
-                      Contact Form & Inquiries
-                    </a>
+                      <HeartHandshake className="w-3.5 h-3.5 shrink-0" />
+                      <span>Donation Request Form</span>
+                    </button>
                   </li>
                   <li>
                     <button
                       onClick={() => onNavigate('expense-sheet')}
-                      className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
+                      className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 transition-colors text-left cursor-pointer"
                     >
-                      <Receipt className="w-3.5 h-3.5" />
+                      <Receipt className="w-3.5 h-3.5 shrink-0" />
                       <span>Event Expense Sheet (Members)</span>
                     </button>
                   </li>
                   <li>
                     <button
                       onClick={onOpenMemberPortal}
-                      className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
+                      className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 transition-colors text-left cursor-pointer"
                     >
-                      <Lock className="w-3.5 h-3.5" />
+                      <Lock className="w-3.5 h-3.5 shrink-0" />
                       <span>Member Portal Sign-in</span>
                     </button>
                   </li>
