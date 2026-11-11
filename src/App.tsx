@@ -70,6 +70,9 @@ const RuralPropertyChecklistPage = lazyWithRetry(() =>
 const ExpenseSheetPage = lazyWithRetry(() =>
   import('./pages/ExpenseSheetPage').then((m) => ({ default: m.ExpenseSheetPage }))
 );
+const DonationRequestPage = lazyWithRetry(() =>
+  import('./pages/DonationRequestPage').then((m) => ({ default: m.DonationRequestPage }))
+);
 
 export type PageView =
   | 'home'
@@ -77,7 +80,8 @@ export type PageView =
   | 'terms'
   | 'fire-safety'
   | 'rural-checklist'
-  | 'expense-sheet';
+  | 'expense-sheet'
+  | 'donation-request';
 
 export default function App() {
   // Page view routing
@@ -113,6 +117,8 @@ export default function App() {
         setCurrentView('rural-checklist');
       } else if (hash.includes('expense')) {
         setCurrentView('expense-sheet');
+      } else if (hash.includes('donation-request')) {
+        setCurrentView('donation-request');
       } else {
         setCurrentView('home');
       }
@@ -249,6 +255,10 @@ export default function App() {
 
             {currentView === 'expense-sheet' && (
               <ExpenseSheetPage onBackToHome={() => navigateTo('home')} />
+            )}
+
+            {currentView === 'donation-request' && (
+              <DonationRequestPage onBackToHome={() => navigateTo('home')} />
             )}
           </Suspense>
         )}
